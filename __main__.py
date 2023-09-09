@@ -71,6 +71,5 @@ deployment = ExposedKubernetesDeployment('website',
                                              )
                                          )
 
-
 export('kubeconfig', k8s_config)
 export('ingress_ip', deployment.ingress.status.apply(lambda status: status.load_balancer.ingress[0].ip))

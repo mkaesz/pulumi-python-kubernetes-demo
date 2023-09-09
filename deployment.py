@@ -1,8 +1,7 @@
 import pulumi
 import pulumi_gcp as gcp
 
-from pulumi import Config, export, get_project, get_stack, Output, ResourceOptions, ComponentResource
-from pulumi_kubernetes import Provider
+from pulumi import Config, export, get_project, get_stack, ResourceOptions, ComponentResource
 from pulumi_kubernetes.apps.v1 import Deployment, DeploymentSpecArgs
 from pulumi_kubernetes.core.v1 import ContainerArgs, EnvVarArgs, PodSpecArgs, PodTemplateSpecArgs, Service, ServicePortArgs, ServiceSpecArgs
 from pulumi_kubernetes.meta.v1 import LabelSelectorArgs, ObjectMetaArgs
@@ -58,7 +57,6 @@ class ExposedKubernetesDeployment(ComponentResource):
                 ),
             ), opts=ResourceOptions(parent=self, provider=args.k8s_provider)
         )
-
 
         # Expose the deployment as a public service.
         self.ingress = Service(args.name,
