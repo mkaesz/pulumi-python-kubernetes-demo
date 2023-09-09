@@ -1,6 +1,6 @@
-name: pulumi-kubernetes-demo
+name: pulumi-python-kubernetes-demo
 runtime:
   name: python
   options:
     virtualenv: venv
-description: A Python program to deploy a Kubernetes cluster on Google Cloud
+description: A Python program to deploy a GKE cluster and an application onto it with Pulumi.

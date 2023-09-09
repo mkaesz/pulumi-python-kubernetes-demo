@@ -6,7 +6,7 @@ from pulumi_gcp.config import project, zone
 from pulumi_gcp.container import Cluster, ClusterNodeConfigArgs
 from pulumi_kubernetes import Provider
 from pulumi_kubernetes.apps.v1 import Deployment, DeploymentSpecArgs
-from pulumi_kubernetes.core.v1 import ContainerArgs, PodSpecArgs, PodTemplateSpecArgs, Service, ServicePortArgs, ServiceSpecArgs
+from pulumi_kubernetes.core.v1 import ContainerArgs, EnvVarArgs, PodSpecArgs, PodTemplateSpecArgs, Service, ServicePortArgs, ServiceSpecArgs
 from pulumi_kubernetes.meta.v1 import LabelSelectorArgs, ObjectMetaArgs
 from pulumi_random import RandomPassword
 
@@ -22,6 +22,8 @@ NODE_MACHINE_TYPE = config.get('node_machine_type') or 'n1-standard-1'
 USERNAME = config.get('username') or 'admin'
 # password is the password for the admin user in the cluster.
 PASSWORD = config.get_secret('password') or RandomPassword("password", length=20, special=True).result
+
+WEBSITE_VALUE = Config("website").require("value")
 
 # Now, actually create the GKE cluster.
 k8s_cluster = Cluster('gke-cluster',
@@ -63,5 +65,42 @@ users:
 # Make a Kubernetes provider instance that uses our cluster from above.
 k8s_provider = Provider('gke_k8s', kubeconfig=k8s_config)
 
-# Finally, export the kubeconfig so that the client can easily access the cluster.
+# Create the website deployment.
+labels = { 'app': 'website-{0}-{1}'.format(get_project(), get_stack()) }
+website = Deployment('website',
+    spec=DeploymentSpecArgs(
+        selector=LabelSelectorArgs(match_labels=labels),
+        replicas=1,
+        template=PodTemplateSpecArgs(
+            metadata=ObjectMetaArgs(labels=labels),
+            spec=PodSpecArgs(
+                containers=[
+                    ContainerArgs(
+                        name='website', 
+                        image='mskaesz/simple-website-with-variable', 
+                        env=[EnvVarArgs(
+                            name="PULUMI_CFG_VALUE",
+                            value=WEBSITE_VALUE, 
+                            )],
+                        )
+                    ]
+                ),
+        ),
+    ), opts=ResourceOptions(provider=k8s_provider)
+)
+
+ingress = Service('ingress',
+    spec=ServiceSpecArgs(
+        type='LoadBalancer',
+        selector=labels,
+        ports=[
+            ServicePortArgs(
+                port=80, 
+                target_port=8080
+                )
+            ],
+    ), opts=ResourceOptions(provider=k8s_provider)
+)
+
 export('kubeconfig', k8s_config)
+export('ingress_ip', ingress.status.apply(lambda status: status.load_balancer.ingress[0].ip))
