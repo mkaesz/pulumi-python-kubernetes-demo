@@ -13,13 +13,17 @@ This example deploy a GKE cluster and a simple website application onto it by us
 
     ```bash
     $ pulumi stack init
+    Please enter your desired stack name.
+    To create a stack in an organization, use the format <org-name>/<stack-name> (e.g. `acmecorp/dev`).
+    stack name: (dev)
+    Created stack 'dev'
     ```
 
 1. Set the Google Cloud project and region
 
     ```bash
     $ pulumi config set gcp:project msk-pub
-    $ pulumi config set gcp:region europe-west3
+    $ pulumi config set gcp:zone europe-west3
     ```
 1. Configure the value to be shown on the website
 
@@ -196,4 +200,4 @@ This example deploy a GKE cluster and a simple website application onto it by us
     This will permanently remove the 'dev' stack!
     Please confirm that this is what you'd like to do by typing `dev`: dev
     Stack 'dev' has been removed!
-    ``` 
+ 
