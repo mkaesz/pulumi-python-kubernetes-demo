@@ -1,4 +1,0 @@
-config:
-  gcp:project: msk-pub
-  gcp:zone: europe-west3
-  website:value: mkaesz111

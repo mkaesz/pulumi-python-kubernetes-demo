@@ -1,19 +1,14 @@
 import pulumi
 import pulumi_gcp as gcp
 
-from pulumi import Config, export, get_project, get_stack, Output, ResourceOptions, ComponentResource
+from pulumi import Config, export, get_project, get_stack, Output
 from pulumi_gcp.config import project, zone
 from pulumi_gcp.container import Cluster, ClusterNodeConfigArgs
 from pulumi_kubernetes import Provider
-from pulumi_kubernetes.apps.v1 import Deployment, DeploymentSpecArgs
-from pulumi_kubernetes.core.v1 import ContainerArgs, EnvVarArgs, PodSpecArgs, PodTemplateSpecArgs, Service, ServicePortArgs, ServiceSpecArgs
-from pulumi_kubernetes.meta.v1 import LabelSelectorArgs, ObjectMetaArgs
-from pulumi_random import RandomPassword
 
 from deployment import DeploymentArgs, ExposedKubernetesDeployment
 
-
-# Read in some configurable settings for our cluster.
+# Read in some configurable settings for the cluster.
 config = Config(None)
 
 NODE_COUNT = config.get_int('node_count') or 3
