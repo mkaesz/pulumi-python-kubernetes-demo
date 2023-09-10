@@ -1,5 +1,5 @@
 # pulumi-python-kubernetes-demo
-This example deploy a GKE cluster and a simple website application onto it by using Pulumi and Python.
+This example deploys a GKE cluster and a simple website application onto it by using Pulumi and Python.
 
 ## Prerequisites
 
@@ -19,7 +19,7 @@ This example deploy a GKE cluster and a simple website application onto it by us
     Created stack 'dev'
     ```
 
-1. Set the Google Cloud project and region
+1. Set the Google Cloud project and region/zone
 
     ```bash
     $ pulumi config set gcp:project msk-pub
