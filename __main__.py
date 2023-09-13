@@ -54,15 +54,15 @@ users:
 k8s_provider = Provider('gke_k8s', kubeconfig=k8s_config)
 
 deployment = ExposedKubernetesDeployment('website',
-                                         DeploymentArgs(
-                                             image='mskaesz/simple-website-with-variable',
-                                             name='website',
-                                             port=80,
-                                             targetPort=8080,
-                                             replicas=1,
-                                             k8s_provider=k8s_provider
-                                             )
-                                         )
+    DeploymentArgs(
+        image='mskaesz/simple-website-with-variable',
+        name='website',
+        port=80,
+        targetPort=8080,
+        replicas=1,
+        k8s_provider=k8s_provider
+    )
+)
 
 export('kubeconfig', k8s_config)
 export('ingress_ip', deployment.ingress.status.apply(lambda status: status.load_balancer.ingress[0].ip))
