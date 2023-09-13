@@ -14,8 +14,6 @@ config = Config(None)
 NODE_COUNT = config.get_int('node_count') or 3
 NODE_MACHINE_TYPE = config.get('node_machine_type') or 'n1-standard-1'
 
-WEBSITE_VALUE = Config("website").require("value")
-
 # Create the GKE cluster.
 k8s_cluster = Cluster('gke-cluster',
     initial_node_count=NODE_COUNT,
