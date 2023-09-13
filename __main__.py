@@ -6,13 +6,15 @@ from pulumi_gcp.config import project, zone
 from pulumi_gcp.container import Cluster, ClusterNodeConfigArgs
 from pulumi_kubernetes import Provider
 
-from deployment import DeploymentArgs, ExposedKubernetesDeployment
+from deployment import ExposedKubernetesDeploymentArgs, ExposedKubernetesDeployment
 
 # Read in some configurable settings for the cluster.
 config = Config(None)
 
 NODE_COUNT = config.get_int('node_count') or 3
 NODE_MACHINE_TYPE = config.get('node_machine_type') or 'n1-standard-1'
+
+WEBSITE_VALUE = Config("website").require("value")
 
 # Create the GKE cluster.
 k8s_cluster = Cluster('gke-cluster',
@@ -54,9 +56,10 @@ users:
 k8s_provider = Provider('gke_k8s', kubeconfig=k8s_config)
 
 deployment = ExposedKubernetesDeployment('website',
-    DeploymentArgs(
+    ExposedKubernetesDeploymentArgs(
         image='mskaesz/simple-website-with-variable',
         name='website',
+        website_value=WEBSITE_VALUE,
         port=80,
         targetPort=8080,
         replicas=1,

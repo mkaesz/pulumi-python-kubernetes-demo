@@ -6,13 +6,11 @@ from pulumi_kubernetes.apps.v1 import Deployment, DeploymentSpecArgs
 from pulumi_kubernetes.core.v1 import ContainerArgs, EnvVarArgs, PodSpecArgs, PodTemplateSpecArgs, Service, ServicePortArgs, ServiceSpecArgs
 from pulumi_kubernetes.meta.v1 import LabelSelectorArgs, ObjectMetaArgs
 
-WEBSITE_VALUE = Config("website").require("value")
-
-class DeploymentArgs:
-
+class ExposedKubernetesDeploymentArgs:
     def __init__(self,
                  image=None,
                  name=None,
+                 website_value=None,
                  port=None,
                  targetPort=None,
                  replicas=1,
@@ -20,6 +18,7 @@ class DeploymentArgs:
                  ):
         self.image = image
         self.name = name
+        self.website_value = website_value
         self.port = port
         self.targetPort = targetPort
         self.replicas = replicas
@@ -28,13 +27,13 @@ class DeploymentArgs:
 class ExposedKubernetesDeployment(ComponentResource):
     def __init__(self,
                  name: str,
-                 args: DeploymentArgs,
+                 args: ExposedKubernetesDeploymentArgs,
                  opts: ResourceOptions = None):
         super().__init__("my:modules:ExposedKubernetesDeployment", name, {}, opts)
 
         # Create the website deployment.
         labels = { 'app': '{0}-{1}-{2}'.format(args.name, get_project(), get_stack()) }
-        website = Deployment(args.name,
+        deployment = Deployment(args.name,
             spec=DeploymentSpecArgs(
                 selector=LabelSelectorArgs(match_labels=labels),
                 replicas=args.replicas,
@@ -48,7 +47,7 @@ class ExposedKubernetesDeployment(ComponentResource):
                                 env=[
                                     EnvVarArgs(
                                         name="PULUMI_CFG_VALUE",
-                                        value=WEBSITE_VALUE, 
+                                        value=args.website_value, 
                                     )
                                 ],
                             )
