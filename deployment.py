@@ -14,7 +14,6 @@ class ExposedKubernetesDeploymentArgs:
                  port=None,
                  targetPort=None,
                  replicas=1,
-                 k8s_provider=None
                  ):
         self.image = image
         self.name = name
@@ -22,7 +21,6 @@ class ExposedKubernetesDeploymentArgs:
         self.port = port
         self.targetPort = targetPort
         self.replicas = replicas
-        self.k8s_provider = k8s_provider
 
 class ExposedKubernetesDeployment(ComponentResource):
     def __init__(self,
@@ -54,7 +52,7 @@ class ExposedKubernetesDeployment(ComponentResource):
                         ]
                     ),
                 ),
-            ), opts=ResourceOptions(parent=self, provider=args.k8s_provider)
+            ), opts=ResourceOptions(parent=self, provider=opts.provider)
         )
 
         # Expose the deployment as a public service.
@@ -68,7 +66,7 @@ class ExposedKubernetesDeployment(ComponentResource):
                         target_port=args.targetPort
                     )
                 ],
-            ), opts=ResourceOptions(parent=self, provider=args.k8s_provider)
+            ), opts=ResourceOptions(parent=self, provider=opts.provider)
         )
 
         self.register_outputs({})

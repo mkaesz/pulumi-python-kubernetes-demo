@@ -63,8 +63,7 @@ deployment = ExposedKubernetesDeployment('website',
         port=80,
         targetPort=8080,
         replicas=1,
-        k8s_provider=k8s_provider
-    )
+    ), opts=pulumi.ResourceOptions(provider=k8s_provider)
 )
 
 export('kubeconfig', k8s_config)
