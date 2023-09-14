@@ -12,7 +12,7 @@ const app = express();
 const value_from_pulumi_config = process.env.PULUMI_CFG_VALUE
 
 app.get('/', (req, res) => {
-  res.send(`Hello World ${value_from_pulumi_config}`);
+  res.send(`Hello World! ${value_from_pulumi_config}`);
 });
 
 app.listen(PORT, HOST);

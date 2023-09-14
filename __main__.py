@@ -7,6 +7,7 @@ from pulumi_gcp.container import Cluster, ClusterNodeConfigArgs
 from pulumi_kubernetes import Provider
 
 from deployment import ExposedKubernetesDeploymentArgs, ExposedKubernetesDeployment
+import container_image
 
 # Read in some configurable settings for the cluster.
 config = Config(None)
@@ -57,7 +58,7 @@ k8s_provider = Provider('gke_k8s', kubeconfig=k8s_config)
 
 deployment = ExposedKubernetesDeployment('website',
     ExposedKubernetesDeploymentArgs(
-        image='mskaesz/simple-website-with-variable',
+        image=container_image.image.image_name,
         name='website',
         website_value=WEBSITE_VALUE,
         port=80,
